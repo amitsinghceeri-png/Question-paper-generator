@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+const API = import.meta.env.VITE_API_URL;
 import {
   GraduationCap,
   BookOpen,
@@ -32,7 +33,7 @@ export default function SelectionForm({ setStep, setSelection }) {
 
   const fetchClasses = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/classes");
+      const response = await axios.get(`${API}/api/classes`);
       setClasses(response.data.data || []);
     } catch (error) {
       console.error("Failed to load classes", error);
@@ -47,9 +48,7 @@ export default function SelectionForm({ setStep, setSelection }) {
     try {
       // "Class 10" → 10
       const classId = className.replace("Class ", "");
-      const response = await axios.get(
-        `http://localhost:5000/api/subjects/${classId}`,
-      );
+      const response = await axios.get(`${API}/api/subjects/${classId}`);
       setSubjects(response.data.data || []);
     } catch (error) {
       console.error("Failed to load subjects", error);
@@ -68,9 +67,7 @@ export default function SelectionForm({ setStep, setSelection }) {
 
       if (!subject) return;
 
-      const response = await axios.get(
-        `http://localhost:5000/api/chapters/${subject.id}`,
-      );
+      const response = await axios.get(`${API}/api/chapters/${subject.id}`);
       setChapters(response.data.data || []);
     } catch (error) {
       console.error("Failed to load chapters", error);
@@ -79,7 +76,7 @@ export default function SelectionForm({ setStep, setSelection }) {
 
   const fetchExamTypes = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/exam-types");
+      const response = await axios.get(`${API}/api/exam-types`);
       setExams(response.data.data || []);
     } catch (error) {
       console.error("Failed to load exam types", error);
