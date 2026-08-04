@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+const API = import.meta.env.VITE_API_URL;
 import {
   ArrowLeft,
   Check,
@@ -30,7 +31,7 @@ export default function QuestionBank({ selection, setStep }) {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/questions/${chapterId}/${examTypeId}`
+          `${API}/api/questions/${chapterId}/${examTypeId}`,
         );
 
         if (res.data && res.data.success) {
@@ -71,7 +72,7 @@ export default function QuestionBank({ selection, setStep }) {
   }, [groupedQuestions]);
 
   const totalSelectedCount = selected.length;
-  
+
   const totalSelectedMarks = useMemo(() => {
     return questions
       .filter((q) => selected.includes(q.id))
@@ -112,7 +113,6 @@ export default function QuestionBank({ selection, setStep }) {
   if (view === "preview") {
     return (
       <div className="w-full space-y-6 print:space-y-0">
-        
         {/* Action Bar (hidden in print) */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-5 print:hidden">
           <div className="space-y-1">
@@ -165,32 +165,52 @@ export default function QuestionBank({ selection, setStep }) {
 
             {/* General Instructions */}
             <div className="mb-8 text-xs space-y-1.5 leading-relaxed font-sans italic border-b border-dashed pb-4 text-slate-800">
-              <p className="font-bold uppercase text-slate-950 not-italic">General Instructions:</p>
-              <p>1. All questions are compulsory. Marks are indicated against each question.</p>
-              <p>2. Please check that this question paper contains {totalSelectedCount} questions.</p>
+              <p className="font-bold uppercase text-slate-950 not-italic">
+                General Instructions:
+              </p>
+              <p>
+                1. All questions are compulsory. Marks are indicated against
+                each question.
+              </p>
+              <p>
+                2. Please check that this question paper contains{" "}
+                {totalSelectedCount} questions.
+              </p>
               <p>3. Section-wise questions must be attempted sequentially.</p>
             </div>
 
             {/* Grouped sections */}
             <div className="space-y-8">
               {marksKeys.map((marks, idx) => {
-                const groupQuestions = groupedQuestions[marks].filter(q => selected.includes(q.id));
+                const groupQuestions = groupedQuestions[marks].filter((q) =>
+                  selected.includes(q.id),
+                );
                 if (groupQuestions.length === 0) return null;
                 const sectionLetter = String.fromCharCode(65 + idx);
 
                 return (
                   <div key={marks} className="space-y-4">
                     <h4 className="font-bold border-b border-slate-800 pb-1 text-base uppercase tracking-wider flex justify-between">
-                      <span>Section {sectionLetter} ({marks} Mark{marks > 1 ? "s" : ""} Questions)</span>
-                      <span className="text-sm font-normal normal-case">[{groupQuestions.length} × {marks} = {groupQuestions.length * marks} Marks]</span>
+                      <span>
+                        Section {sectionLetter} ({marks} Mark
+                        {marks > 1 ? "s" : ""} Questions)
+                      </span>
+                      <span className="text-sm font-normal normal-case">
+                        [{groupQuestions.length} × {marks} ={" "}
+                        {groupQuestions.length * marks} Marks]
+                      </span>
                     </h4>
-                    
+
                     <ol className="list-decimal pl-5 space-y-4">
                       {groupQuestions.map((q) => (
                         <li key={q.id} className="pl-2 leading-relaxed">
                           <div className="flex justify-between items-start gap-4">
-                            <span className="text-sm md:text-base">{q.question_text}</span>
-                            <span className="font-bold text-sm select-none">[{marks}]</span>
+                            <span className="text-sm md:text-base">
+                              {q.question_text}
+                            </span>
+                            <span className="font-bold text-sm select-none">
+                              [{marks}]
+                            </span>
                           </div>
                         </li>
                       ))}
@@ -221,32 +241,55 @@ export default function QuestionBank({ selection, setStep }) {
 
           {/* Instructions */}
           <div className="mb-8 text-xs space-y-1.5 leading-relaxed font-sans italic border-b border-dashed pb-4 text-slate-800">
-            <p className="font-bold uppercase text-slate-950 not-italic">General Instructions:</p>
-            <p>1. All questions are compulsory. Marks are indicated against each question.</p>
-            <p>2. Please check that this question paper contains {totalSelectedCount} questions.</p>
+            <p className="font-bold uppercase text-slate-950 not-italic">
+              General Instructions:
+            </p>
+            <p>
+              1. All questions are compulsory. Marks are indicated against each
+              question.
+            </p>
+            <p>
+              2. Please check that this question paper contains{" "}
+              {totalSelectedCount} questions.
+            </p>
             <p>3. Section-wise questions must be attempted sequentially.</p>
           </div>
 
           {/* Sections */}
           <div className="space-y-8">
             {marksKeys.map((marks, idx) => {
-              const groupQuestions = groupedQuestions[marks].filter(q => selected.includes(q.id));
+              const groupQuestions = groupedQuestions[marks].filter((q) =>
+                selected.includes(q.id),
+              );
               if (groupQuestions.length === 0) return null;
               const sectionLetter = String.fromCharCode(65 + idx);
 
               return (
                 <div key={marks} className="space-y-4 print:break-inside-avoid">
                   <h4 className="font-bold border-b border-slate-800 pb-1 text-base uppercase tracking-wider flex justify-between">
-                    <span>Section {sectionLetter} ({marks} Mark{marks > 1 ? "s" : ""} Questions)</span>
-                    <span className="text-sm font-normal normal-case">[{groupQuestions.length} × {marks} = {groupQuestions.length * marks} Marks]</span>
+                    <span>
+                      Section {sectionLetter} ({marks} Mark
+                      {marks > 1 ? "s" : ""} Questions)
+                    </span>
+                    <span className="text-sm font-normal normal-case">
+                      [{groupQuestions.length} × {marks} ={" "}
+                      {groupQuestions.length * marks} Marks]
+                    </span>
                   </h4>
-                  
+
                   <ol className="list-decimal pl-5 space-y-4">
                     {groupQuestions.map((q) => (
-                      <li key={q.id} className="pl-2 leading-relaxed print:break-inside-avoid">
+                      <li
+                        key={q.id}
+                        className="pl-2 leading-relaxed print:break-inside-avoid"
+                      >
                         <div className="flex justify-between items-start gap-4">
-                          <span className="text-sm md:text-base">{q.question_text}</span>
-                          <span className="font-bold text-sm select-none">[{marks}]</span>
+                          <span className="text-sm md:text-base">
+                            {q.question_text}
+                          </span>
+                          <span className="font-bold text-sm select-none">
+                            [{marks}]
+                          </span>
                         </div>
                       </li>
                     ))}
@@ -297,24 +340,33 @@ export default function QuestionBank({ selection, setStep }) {
 
       {/* Chapter Indicator */}
       <div className="rounded-2xl bg-gradient-to-r from-blue-500/5 to-indigo-500/5 border border-slate-200/55 p-4 flex flex-col md:flex-row md:items-center gap-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Selected Chapter:</span>
-        <span className="text-sm font-extrabold text-slate-800">{selection?.chapterName || "Not Selected"}</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          Selected Chapter:
+        </span>
+        <span className="text-sm font-extrabold text-slate-800">
+          {selection?.chapterName || "Not Selected"}
+        </span>
       </div>
 
       {/* Main Content Area */}
       {loading ? (
         <div className="flex min-h-[250px] flex-col items-center justify-center gap-3">
           <Loader2 className="animate-spin text-blue-600" size={36} />
-          <p className="text-sm font-bold text-slate-500">Fetching questions from database...</p>
+          <p className="text-sm font-bold text-slate-500">
+            Fetching questions from database...
+          </p>
         </div>
       ) : questions.length === 0 ? (
         <div className="flex min-h-[280px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center shadow-sm">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-500 mb-3 border border-amber-100">
             <AlertCircle size={24} />
           </div>
-          <h3 className="text-base font-extrabold text-slate-800">No Questions Available</h3>
+          <h3 className="text-base font-extrabold text-slate-800">
+            No Questions Available
+          </h3>
           <p className="mt-1 max-w-sm text-xs font-medium text-slate-500 leading-relaxed">
-            There are no questions in the database matching this chapter and exam type combination. Try returning to step 1 to choose another.
+            There are no questions in the database matching this chapter and
+            exam type combination. Try returning to step 1 to choose another.
           </p>
           <button
             onClick={() => setStep(1)}
@@ -409,12 +461,20 @@ export default function QuestionBank({ selection, setStep }) {
           {/* Sticky Bottom Actions Bar */}
           <div className="border-t border-slate-100 pt-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center sm:text-left">
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Current Selection</p>
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                Current Selection
+              </p>
               <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="text-xl font-black text-slate-900">{totalSelectedCount}</span>
-                <span className="text-xs font-semibold text-slate-500">Questions selected</span>
+                <span className="text-xl font-black text-slate-900">
+                  {totalSelectedCount}
+                </span>
+                <span className="text-xs font-semibold text-slate-500">
+                  Questions selected
+                </span>
                 <span className="text-xs text-slate-300">|</span>
-                <span className="text-sm font-extrabold text-blue-600">Total Marks: {totalSelectedMarks}</span>
+                <span className="text-sm font-extrabold text-blue-600">
+                  Total Marks: {totalSelectedMarks}
+                </span>
               </div>
             </div>
 
