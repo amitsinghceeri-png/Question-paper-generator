@@ -268,10 +268,10 @@ export default function QuestionBank() {
 
         {/* Loading Spinner */}
         {loading ? (
-          <div className="flex min-h-[350px] flex-col items-center justify-center gap-3 bg-white rounded-3xl border border-slate-200/60 shadow-sm print:hidden">
+          <div className="flex min-h-[350px] flex-col items-center justify-center gap-3 bg-white border border-slate-200/60 shadow-sm print:hidden">
             <Loader2 className="animate-spin text-brand-primary" size={40} />
             <p className="text-sm font-extrabold text-slate-500">
-              Fetching relevant questions from database...
+              Fetching Relevant Questions
             </p>
           </div>
         ) : questions.length === 0 ? (
