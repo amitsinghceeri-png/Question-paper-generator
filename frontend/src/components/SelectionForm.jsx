@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 import {
   GraduationCap,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 
 export default function SelectionForm({ setStep, setSelection }) {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     class: "",
     subject: "",
@@ -118,17 +120,15 @@ export default function SelectionForm({ setStep, setSelection }) {
 
     return (
       <div
-        className={`space-y-2 transition-all duration-300 ${isLocked ? "opacity-45" : "opacity-100"}`}
+        className={`space-y-1.5 transition-all duration-300 ${isLocked ? "opacity-45" : "opacity-100"}`}
       >
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
             <span
-              className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-all duration-300 ${
-                isCompleted
-                  ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                  : isActive
-                    ? "bg-blue-50 text-blue-600 border-blue-100"
-                    : "bg-slate-50 text-slate-400 border-slate-100"
+              className={`flex h-7 w-7 items-center justify-center rounded-full border transition-all duration-300 ${
+                isActive || isCompleted
+                  ? "bg-brand-light text-brand-primary border-brand-accent/20"
+                  : "bg-slate-50 text-slate-400 border-slate-100"
               }`}
             >
               {icon}
@@ -142,20 +142,6 @@ export default function SelectionForm({ setStep, setSelection }) {
 
           {/* Status Indicator */}
           <div className="flex items-center">
-            {isCompleted && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-sm animate-scale-in">
-                <Check size={11} strokeWidth={3.5} />
-              </span>
-            )}
-            {isActive && (
-              <span className="flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-600 border border-blue-100">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-600"></span>
-                </span>
-                <span>Select</span>
-              </span>
-            )}
             {isLocked && (
               <span className="text-slate-400/80">
                 <Lock size={13} />
@@ -170,9 +156,8 @@ export default function SelectionForm({ setStep, setSelection }) {
             disabled={disabled}
             onChange={(e) => onChange(e.target.value)}
             className={`h-12 w-full appearance-none rounded-xl border bg-white px-4 pr-10 text-sm font-semibold outline-none transition-all duration-200
-              ${isCompleted ? "border-emerald-200 bg-emerald-50/5 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50" : ""}
-              ${isActive ? "border-blue-400 shadow-sm focus:border-blue-600 focus:ring-4 focus:ring-blue-50" : ""}
-              ${isLocked ? "border-slate-100 bg-slate-50/50 cursor-not-allowed text-slate-400" : "border-slate-200 text-slate-800 hover:border-slate-300 focus:border-blue-500"}
+              ${isActive ? "border-brand-primary shadow-sm focus:border-brand-primary focus:ring-4 focus:ring-brand-glow" : ""}
+              ${isLocked ? "border-slate-100 bg-slate-50/50 cursor-not-allowed text-slate-400" : "border-slate-200 text-slate-800 hover:border-slate-300 focus:border-brand-primary"}
             `}
           >
             <option value="">Select {label}</option>
@@ -186,7 +171,7 @@ export default function SelectionForm({ setStep, setSelection }) {
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">
             <ChevronDown
               size={16}
-              className={`transition-transform duration-200 ${isActive ? "text-blue-500" : ""}`}
+              className={`transition-transform duration-200 ${isActive ? "text-brand-primary" : ""}`}
             />
           </div>
         </div>
@@ -195,7 +180,7 @@ export default function SelectionForm({ setStep, setSelection }) {
   };
 
   return (
-    <div className="space-y-4 px-8 py-6">
+    <div className="space-y-3.5 px-8 py-4">
       <Field
         label="Class"
         icon={<GraduationCap size={16} />}
@@ -282,26 +267,30 @@ export default function SelectionForm({ setStep, setSelection }) {
             (item) => item.exam_name === form.exam,
           );
 
+          const selectionData = {
+            className: form.class,
+            subjectId: selectedSubject.id,
+            subjectName: form.subject,
+            chapterId: selectedChapter.id,
+            chapterName: form.chapter,
+            examTypeId: selectedExam.id,
+            examTypeName: form.exam,
+          };
+
           if (setSelection) {
-            setSelection({
-              className: form.class,
-              subjectId: selectedSubject.id,
-              subjectName: form.subject,
-              chapterId: selectedChapter.id,
-              chapterName: form.chapter,
-              examTypeId: selectedExam.id,
-              examTypeName: form.exam,
-            });
+            setSelection(selectionData);
           }
 
           if (setStep) {
             setStep(2);
           }
+
+          navigate("/question-bank", { state: { selection: selectionData } });
         }}
         className={`group mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base font-bold transition-all duration-300 shadow-md
           ${
             canContinue
-              ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-blue-100 hover:shadow-lg hover:shadow-blue-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              ? "bg-gradient-to-r from-brand-primary to-brand-dark text-white hover:opacity-95 shadow-brand-glow hover:shadow-lg hover:shadow-brand-accent/20 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
               : "bg-slate-100 text-slate-400 border border-slate-200/50 cursor-not-allowed shadow-none"
           }`}
       >
