@@ -4,7 +4,7 @@ import Background from "../components/Background";
 import SelectionForm from "../components/SelectionForm";
 import logo from "../assets/logo.png";
 import educationHero from "../assets/education_hero.png";
-import { Award, Zap, CheckCircle, School } from "lucide-react";
+import { Award, Zap, CheckCircle, School, Sliders } from "lucide-react";
 
 export default function GeneratePage() {
   const navigate = useNavigate();
@@ -33,17 +33,18 @@ export default function GeneratePage() {
               Praxis <span className="text-brand-primary">Learning</span>
             </span>
           </div>
+          <button
+            onClick={() => navigate("/admin")}
+            className="flex items-center gap-2 rounded-full bg-brand-primary px-4 py-2 text-xs font-bold text-white border border-brand-accent/20 hover:bg-brand-dark transition-all duration-300 shadow-sm cursor-pointer"
+          >
+            <Sliders size={14} />
+            <span>Admin</span>
+          </button>
         </header>
         {/* Split Grid Layout */}
         <main className="my-auto grid w-full grid-cols-1 gap-8 py-4 lg:grid-cols-12 lg:gap-10 items-center">
           {/* Left Column: Brand Copy & Taglines */}
           <div className="flex flex-col justify-center space-y-4 lg:space-y-3.5 lg:col-span-7 animate-scale-in">
-            {/* Tagline Badge */}
-            <div className="inline-flex self-start items-center gap-2 rounded-full bg-brand-light px-3.5 py-1.5 text-[11px] font-bold text-brand-primary border border-brand-accent/20">
-              <span className="flex h-2 w-2 rounded-full bg-brand-primary animate-pulse" />
-              AI-Powered Assessment Platform
-            </div>
-
             {/* Main Headline */}
             <div className="space-y-6">
               <h1 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl xl:text-[52px] leading-tight">
@@ -53,10 +54,10 @@ export default function GeneratePage() {
                 </span>{" "}
                 in Seconds
               </h1>
-              <p className="text-sm text-slate-600 sm:text-base leading-relaxed max-w-xl">
+              <p className="max-w-2xl mx-auto text-sm sm:text-base leading-relaxed text-slate-700 text-justify">
                 Empower your teaching with the ultimate question paper builder.
-                Choose your course parameters, select chapters, and instantly
-                generate print-ready assessments.
+                Choose your class, course parameters, select chapters, and
+                instantly generate print-ready assessments.
               </p>
             </div>
 

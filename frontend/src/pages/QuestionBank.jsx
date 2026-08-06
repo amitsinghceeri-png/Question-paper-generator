@@ -29,7 +29,6 @@ export default function QuestionBank() {
   const selection = location.state?.selection;
 
   const chapterId = selection?.chapterId;
-  const examTypeId = selection?.examTypeId;
 
   const [questions, setQuestions] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -49,13 +48,11 @@ export default function QuestionBank() {
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      if (!chapterId || !examTypeId) return;
+      if (!chapterId) return;
 
       setLoading(true);
       try {
-        const res = await axios.get(
-          `${API}/api/questions/${chapterId}/${examTypeId}`,
-        );
+        const res = await axios.get(`${API}/api/questions/${chapterId}`);
 
         if (res.data && res.data.success) {
           setQuestions(res.data.data || []);
@@ -72,7 +69,7 @@ export default function QuestionBank() {
     };
 
     fetchQuestions();
-  }, [chapterId, examTypeId]);
+  }, [chapterId]);
 
   // Group questions dynamically by marks
   const groupedQuestions = useMemo(() => {
@@ -284,9 +281,8 @@ export default function QuestionBank() {
               No Questions Available
             </h3>
             <p className="mt-2 max-w-sm text-xs font-semibold text-slate-400 leading-relaxed">
-              There are no questions in the database matching this chapter and
-              exam type combination. Try returning to setup and choose another
-              topic.
+              There are no questions available for the selected chapter. Please
+              choose another chapter or add questions from the Admin Panel.
             </p>
             <button
               onClick={() => navigate("/generate")}
@@ -494,13 +490,13 @@ export default function QuestionBank() {
                   {/* Exam Board Header */}
                   <div className="text-center space-y-2 border-b-2 border-slate-800 pb-5 mb-5">
                     <h2 className="text-xl font-bold uppercase tracking-wide">
-                      {selection.examTypeName || "Examination"}
+                      {selection.examTypeName || "Examination"} Examination
                     </h2>
                     <div className="flex justify-between text-xs font-semibold tracking-tight px-2">
-                      <span>Class: {selection.className}</span>
+                      <span>{selection.className}</span>
                       <span>Subject: {selection.subjectName}</span>
                     </div>
-                    <div className="flex justify-between text-xs font-semibold tracking-tight px-2 border-t pt-2 border-slate-300">
+                    <div className="flex justify-between text-xs font-semibold tracking-tight px-2 pt-2 ">
                       <span>Chapter: {selection.chapterName}</span>
                       <span>Max Marks: {totalSelectedMarks}</span>
                     </div>
